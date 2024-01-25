@@ -1,21 +1,20 @@
 package com.example.orderservice.service;
 
 import com.example.orderservice.model.Order;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 @Service
+@RequiredArgsConstructor
 public class KafkaMessageService {
-    private final List<Order> orders = new ArrayList<>();
+    private final KafkaTemplate<String, Order> kafkaTemplate;
 
-    public void add(Order order) {
-        orders.add(order);
-    }
+    @Value("${app.kafka.kafkaOrderTopic}")
+    private String topicName;
 
-    public Optional<Order> getByProduct(String product) {
-        return orders.stream().filter(mes -> mes.getProduct().equals(product)).findFirst();
+    public void send(Order order) {
+        kafkaTemplate.send(topicName, order);
     }
 }

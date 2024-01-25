@@ -4,5 +4,6 @@ spring:
 
 app:
   kafka:
-    kafkaMessageTopic: "order-status-topic"
+    kafkaOrderTopic: "order-topic"
+    kafkaOrderStatusTopic: "order-status-topic"
     kafkaMessageGroupId: "kafka-message-group-id"

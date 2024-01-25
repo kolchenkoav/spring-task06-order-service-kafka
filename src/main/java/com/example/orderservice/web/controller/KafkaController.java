@@ -1,34 +1,27 @@
 package com.example.orderservice.web.controller;
 
-
 import com.example.orderservice.model.Order;
 import com.example.orderservice.service.KafkaMessageService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * эндпоинт, на который приходит POST-запрос с сущностью Order.
+ * Сущность Order состоит из двух полей: String product и Integer quantity.
+ * Эндпоинт принимает сущность и отправляет в Kafka событие OrderEvent
+ * (которое также состоит из полей product и quantity).
+ * Событие отправляется в топик order-topic.
+ */
 @RestController
-@RequestMapping("api/v1/kafka")
+@RequestMapping("/api/v1/kafka")
 @RequiredArgsConstructor
 public class KafkaController {
-    @Value("${app.kafka.kafkaMessageTopic}")
-    private String topicName;
-
-    private final KafkaTemplate<String, Order> kafkaTemplate;
-
-    private final KafkaMessageService kafkaMessageService;
+    private final KafkaMessageService service;
 
     @PostMapping("/send")
     public ResponseEntity<String> sendMessage(@RequestBody Order order) {
-        kafkaTemplate.send(topicName, order);
-
-        return ResponseEntity.ok("Message send to kafka");
-    }
-
-    @GetMapping("/{product}")
-    public ResponseEntity<Order> getByProduct(@PathVariable String product) {
-        return ResponseEntity.ok(kafkaMessageService.getByProduct(product).orElseThrow());
+        service.send(order);
+        return ResponseEntity.ok("Order send to kafka");
     }
 }

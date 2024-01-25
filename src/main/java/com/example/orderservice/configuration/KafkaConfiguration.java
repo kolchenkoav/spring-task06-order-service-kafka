@@ -1,6 +1,5 @@
 package com.example.orderservice.configuration;
 
-
 import com.example.orderservice.model.Order;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -50,7 +49,6 @@ public class KafkaConfiguration {
         config.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
         return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), new JsonDeserializer<>(objectMapper));
     }
-    //11:27
 
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, Order> kafkaMessageConcurrentKafkaListenerContainerFactory(
